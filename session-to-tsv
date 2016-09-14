@@ -2,4 +2,4 @@
 # Convert a Mozilla Firefox SessionSaver JSON(-ish) session file to a tab-separated value file with page titles and URLs
 # Pipe-in/pipe-out
 
-tr '\r' '\n' | drop 4 | jq -r '.windows[] | .tabs[] | recurse(.entries[]?) | [ .title, .url ] | @tsv'
+tr '\r' '\n' | sed '1,4d' | jq -r '.windows[] | .tabs[] | recurse(.entries[]?) | [ .title, .url ] | @tsv'
