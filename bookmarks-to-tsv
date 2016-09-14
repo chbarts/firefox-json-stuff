@@ -1,0 +1,5 @@
+#!/usr/bin/jq -Mfr
+# Extract the information mentioned from a Firefox JSON bookmark dump into tab-separated value format, one line per record
+
+# recurse(.children[]?) | [ .title , .uri , .tags ] | @tsv
+recurse(.children[]?) | if .type == "text/x-moz-place" then [ .title , .uri , .tags ] else (.title as $title | .annos[]? | select(.name == "livemark/siteURI") | [ $title , .value , "RSS Feed" ]) end | @tsv
