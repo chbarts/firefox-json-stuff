@@ -2,4 +2,4 @@
 # Pipe-in pipe-out program
 # awk program could probably be cleaner
 
-awk -F= '$1 ~ /timestamp/ { n = split($2, a, ""); res = ""; for (i = 0; i <= n - 3; i++) res = res a[i]; print "@"res; }' | xargs -- date -d
+tr '\r' '\n' | awk -F= '$1 ~ /timestamp/ { n = split($2, a, ""); res = ""; for (i = 0; i <= n - 3; i++) res = res a[i]; print "@"res; }' | xargs -- date -d
