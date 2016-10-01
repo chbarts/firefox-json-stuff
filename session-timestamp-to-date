@@ -1,5 +1,4 @@
 #!/usr/bin/env zsh
 # Pipe-in pipe-out program
-# awk program could probably be cleaner
 
 tr '\r' '\n' | awk -F= '$1 ~ /timestamp/ { res = sprintf("%d", $2/1000); print "@"res; }' | xargs -- date -d
