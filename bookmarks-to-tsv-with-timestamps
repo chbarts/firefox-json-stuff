@@ -1,5 +1,6 @@
 #!/usr/bin/env zsh
 # A program to convert Firefox JSON bookmark dumps to TSV with timestamp information.
 # Pipe-in/Pipe-out, relies on GNU Awk (probably)
+# Uses code from the GNU Awk Manual: https://www.gnu.org/software/gawk/manual/html_node/Function-Example.html
 
-jq -r 'recurse(.children[]?) | if .type == "text/x-moz-place" then [ .title , .uri , .tags , .dateAdded , .lastModified ] else (.title as $title | .dateAdded as $dateAdded | .lastModified as $lastModified | .annos[]? | select(.name == "livemark/siteURI") | [ $title , .value , "RSS Feed" , $dateAdded , $lastModified ]) end | @tsv' | awk -F'\t' '{ da = sprintf("%d", $4/1000000); lm = sprintf("%d", $5/1000000); dac = "date -d @" da; dac | getline dar; close(dac); lmc = "date -d @" lm; lmc | getline lmr; close(lmc); print $1 "\t" $2 "\t" $3 "\t" dar "\t" lmr }'
+jq -r 'recurse(.children[]?) | if .type == "text/x-moz-place" then [ .title , .uri , .tags , .dateAdded , .lastModified ] else (.title as $title | .dateAdded as $dateAdded | .lastModified as $lastModified | .annos[]? | select(.name == "livemark/siteURI") | [ $title , .value , "RSS Feed" , $dateAdded , $lastModified ]) end | @tsv' | awk -F'\t' 'function ctime(ts) { return strftime("%a %b %e %H:%M:%S %Z %Y", ts); } { dar = ctime(sprintf("%d", $4/1000000)); lmr = ctime(sprintf("%d", $5/1000000)); print $1 "\t" $2 "\t" $3 "\t" dar "\t" lmr }'
