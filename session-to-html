@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+# Convert a Firefox .session file to an HTML file
+# Usage: session-to-html foo.session > foo.html
+n=${@%.*}
+session-to-tsv < "$@" | awk -F'\t' 'BEGIN { print "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><title>'$n'</title></head><body><ul>" } /\w+/ { url = $2; if (length($1) > 0) { name = $1 } else { name = url } print "<li><a href=\""url"\">"name"</a></li>" } END { print "</ul></body></html>" }'
