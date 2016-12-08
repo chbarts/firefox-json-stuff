@@ -1,5 +1,5 @@
 #!/usr/bin/env zsh
-# Convert a Firefox .session file to an HTML file
-# Usage: session-to-html foo.session > foo.html
+# Convert a Firefox .session file converted to .tsv to an HTML file
+# Usage: session-to-html foo-session.tsv > foo-session.html
 n=${@%.*}
 awk -v n="$n" -F'\t' 'function escapeName(name) { gsub(/&/, "\\&amp;", name); gsub(/</, "\\&lt;", name); gsub(/>/, "\\&gt;", name); return name; } function escapeUrl(url) { url = escapeName(url); gsub(/"/, "\\&#39;", url); return url; } BEGIN { print "<!DOCTYPE html><html><head><meta charset=\"utf-8\"><title>"escapeName(n)"</title></head><body><ul>" } /\w+/ { url = escapeUrl($2); if (length($1) > 0) { name = escapeName($1) } else { name = url } print "<li><a href=\""url"\">"name"</a></li>" } END { print "</ul></body></html>" }' < "$@"
