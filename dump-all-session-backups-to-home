@@ -1,0 +1,7 @@
+#!/usr/bin/env zsh
+
+for i in backup*
+do
+ts=$(tr '\r' '\n' < $i | awk -F'=' '/^timestamp/ { print $2 }')
+[[ ! -e ~/backup-$ts.html ]] && session-to-html $i > ~/backup-$ts.html
+done
